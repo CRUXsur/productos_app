@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class AuthBackground extends StatelessWidget {
-  const AuthBackground({Key? key}) : super(key: key);
+  //! EL AuthBackground va a esperar un widget child:
+  final Widget child;
+
+  const AuthBackground({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -10,10 +16,35 @@ class AuthBackground extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       child: Stack(
-        children: const [
+        children: [
           //
-          _PurpleBox(),
+          const _PurpleBox(),
+          const _HeaderIcon(),
+          this.child,
         ],
+      ),
+    );
+  }
+}
+
+class _HeaderIcon extends StatelessWidget {
+  const _HeaderIcon({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 30),
+        child: const Icon(
+          Icons.person_pin,
+          color: Colors.white,
+          size: 100,
+        ),
+        //height: 200,
+        //color: Colors.red,
       ),
     );
   }
