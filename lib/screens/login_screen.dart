@@ -50,6 +50,8 @@ class _LoginForm extends StatelessWidget {
     return Container(
       child: Form(
         //TODO: mantener la referencia al KEY
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+
         child: Column(
           children: [
             TextFormField(
@@ -60,6 +62,14 @@ class _LoginForm extends StatelessWidget {
                 labelText: 'Correo electronico',
                 prefixIcon: Icons.alternate_email_rounded,
               ),
+              validator: (value) {
+                String pattern =
+                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                RegExp regExp = RegExp(pattern);
+                return regExp.hasMatch(value ?? '')
+                    ? null
+                    : 'El correo no tiene formato';
+              },
             ),
             const SizedBox(height: 30),
             TextFormField(
@@ -71,6 +81,10 @@ class _LoginForm extends StatelessWidget {
                 labelText: 'Contrasena',
                 prefixIcon: Icons.lock_outline,
               ),
+              validator: (value) {
+                if (value != null && value.length >= 6) return null;
+                return 'La contrasena debe ser minimo 6 caracteres';
+              },
             ),
             const SizedBox(height: 30),
             MaterialButton(
