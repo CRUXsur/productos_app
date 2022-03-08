@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/ui/input_decorations.dart';
 import 'package:productos_app/widgets/widgets.dart';
 
@@ -22,7 +25,10 @@ class LoginScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   const SizedBox(height: 30),
-                  const _LoginForm(),
+                  ChangeNotifierProvider(
+                    create: (_) => LoginFormProvider(),
+                    child: const _LoginForm(),
+                  ),
                 ],
               ),
             ),
@@ -47,11 +53,11 @@ class _LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loginForm = Provider.of<LoginFormProvider>(context);
     return Container(
       child: Form(
-        //TODO: mantener la referencia al KEY
+        key: loginForm.formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-
         child: Column(
           children: [
             TextFormField(
@@ -62,6 +68,7 @@ class _LoginForm extends StatelessWidget {
                 labelText: 'Correo electronico',
                 prefixIcon: Icons.alternate_email_rounded,
               ),
+              onChanged: (value) => loginForm.email = value,
               validator: (value) {
                 String pattern =
                     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -81,6 +88,7 @@ class _LoginForm extends StatelessWidget {
                 labelText: 'Contrasena',
                 prefixIcon: Icons.lock_outline,
               ),
+              onChanged: (value) => loginForm.password = value,
               validator: (value) {
                 if (value != null && value.length >= 6) return null;
                 return 'La contrasena debe ser minimo 6 caracteres';
@@ -104,6 +112,11 @@ class _LoginForm extends StatelessWidget {
               ),
               onPressed: () {
                 //TODO: Login Form Submit
+                if (!loginForm.isValidForm()) return;
+                //! si todo sale bien!, me voy a la siguiente screen
+                //! destruye el stack de las pantallas y no permite
+                //! regresar atras!
+                Navigator.pushReplacementNamed(context, 'home');
               },
             )
           ],
