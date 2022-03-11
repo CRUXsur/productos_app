@@ -5,12 +5,13 @@
 import 'dart:convert';
 
 class Product {
-  Product({
-    required this.available,
-    required this.name,
-    this.picture,
-    required this.price,
-  });
+  Product(
+      {required this.available,
+      required this.name,
+      this.picture,
+      required this.price,
+      //added
+      this.id});
 
   bool available;
   String name;
@@ -35,4 +36,14 @@ class Product {
         "picture": picture,
         "price": price,
       };
+  //? me creo una copia de mi model porque, cuando hago un tap en un
+  //? card producto, me manda x referencia, entonces puedo modificar
+  //? el card antes del tap en el floating de save!!!!!
+  Product copy() => Product(
+        available: this.available,
+        name: this.name,
+        picture: this.picture,
+        price: this.price,
+        id: this.id,
+      );
 }

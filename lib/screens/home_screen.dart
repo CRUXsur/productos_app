@@ -27,7 +27,13 @@ class HomeScreen extends StatelessWidget {
           int index,
         ) =>
             GestureDetector(
-          onTap: () => Navigator.pushNamed(context, 'product'),
+          onTap: () {
+            //?
+            //? aqui, onTap le mando la copia para romper la referencia!
+            productsService.selectedProduct =
+                productsService.products[index].copy();
+            Navigator.pushNamed(context, 'product');
+          },
           child: ProductCard(
             product: productsService.products[index],
           ),
