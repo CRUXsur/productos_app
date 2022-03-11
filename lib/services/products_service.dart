@@ -11,7 +11,7 @@ class ProductsService extends ChangeNotifier {
   final List<Product> products = [];
   bool isLoading = true;
 
-  //TODO: Hacer fetch de productos
+  //HACER FETCH DE PRODUCTOS
 
   //cuando la instancia sea llamada
   ProductsService() {
@@ -24,9 +24,11 @@ class ProductsService extends ChangeNotifier {
   //? pero me ayuda con la restriccion....
   //? necesito que me devuelva la lista se productos
   //? se dispara cuando se carga la instancia
-  //TODO: <List<Product>>
+  //<List<Product>>...nos sirve cuando ponemos return
   //Future<List<Product>>loadProducts() async {
-  Future loadProducts() async {
+  Future<List<Product>> loadProducts() async {
+    this.isLoading = true;
+    notifyListeners();
     //
     final url = Uri.https(_baseUrl, 'products.json');
     //?disparamos la peticion
@@ -40,7 +42,7 @@ class ProductsService extends ChangeNotifier {
     //? json .....import 'dart:convert';
 
     //? pero esto es un Map.....mmmmm...yo quisiera que sea un listado
-    print(productsMap);
+    //print(productsMap);
     //? lo parseo...del metodo fromMap que nos creo quicktype.io
     productsMap.forEach((key, value) {
       final tempProduct = Product.fromMap(value);
@@ -55,6 +57,10 @@ class ProductsService extends ChangeNotifier {
       this.products.add(tempProduct);
     });
 
-    print(this.products[0].name);
+    this.isLoading = false;
+    notifyListeners();
+
+    //print(this.products[0].name);
+    return this.products;
   }
 }
