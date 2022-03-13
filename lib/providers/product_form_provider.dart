@@ -12,6 +12,16 @@ class ProductFormProvider extends ChangeNotifier {
 
   Product product;
   ProductFormProvider(this.product);
+  //
+  //
+  updateAvailability(bool value) {
+    //
+    print(value);
+    this.product.available = value;
+    notifyListeners();
+  }
+  //
+  //
 
   //? [A]
   //? esto es un metodo, en el cual yo voy a retornar...

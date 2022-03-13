@@ -16,29 +16,37 @@ class ProductImage extends StatelessWidget {
         decoration: _buildBoxDecoration(),
         width: double.infinity,
         height: 450,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(45),
-            topRight: Radius.circular(45),
+        child: Opacity(
+          //! el ClipRRect(...wrap with widget -> Opacity -> opacity: 0.5,
+          //! esto hago para que con un fondo blanco en la picture no se
+          //! puede ver el icono de la camara ni del left arrow!!!!!!!
+          //! va con [A]....ver abajo!
+          opacity: 0.9,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(45),
+              topRight: Radius.circular(45),
+            ),
+            child: this.url == null
+                ? const Image(
+                    image: AssetImage('assets/no-image.png'),
+                    fit: BoxFit.cover,
+                  )
+                : FadeInImage(
+                    //! YA HICE LA VERIFICACION, puedo poner !
+                    image: NetworkImage(this.url!),
+                    placeholder: AssetImage('assets/jar-loading.gif'),
+                    fit: BoxFit.cover,
+                  ),
           ),
-          child: this.url == null
-              ? const Image(
-                  image: AssetImage('assets/no-image.png'),
-                  fit: BoxFit.cover,
-                )
-              : FadeInImage(
-                  //! YA HICE LA VERIFICACION, puedo poner !
-                  image: NetworkImage(this.url!),
-                  placeholder: AssetImage('assets/jar-loading.gif'),
-                  fit: BoxFit.cover,
-                ),
         ),
       ),
     );
   }
 
   BoxDecoration _buildBoxDecoration() => BoxDecoration(
-        color: Colors.red,
+        //! es para [A]
+        color: Colors.black,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(45),
           topRight: Radius.circular(45),

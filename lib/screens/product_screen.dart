@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:productos_app/models/models.dart';
+import 'package:flutter/services.dart';
 import 'package:productos_app/providers/product_form_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +41,8 @@ class _ProductScreenBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
+        //* en lo personal lo veo muy agresivo!
+        //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             //
@@ -135,6 +137,11 @@ class _ProductForm extends StatelessWidget {
               const SizedBox(height: 30),
               TextFormField(
                 initialValue: '${product.price}',
+                //! damos formato al valor del TextFormField(.....
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'^(\d+)?\.?\d{0,2}'))
+                ],
                 onChanged: (value) {
                   if (double.tryParse(value) == null) {
                     product.price = 0;
@@ -156,6 +163,7 @@ class _ProductForm extends StatelessWidget {
                 activeColor: Colors.indigo,
                 onChanged: (value) {
                   //TODO: pendiente
+                  productForm.updateAvailability(value);
                 },
               ),
               const SizedBox(height: 20),
