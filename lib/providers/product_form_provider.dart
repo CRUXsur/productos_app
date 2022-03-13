@@ -31,6 +31,9 @@ class ProductFormProvider extends ChangeNotifier {
     //? y si esto resulta nulo, entonces sera false!
     //? el signo ? es por si acaso no esta asignado a un widget
     //? ...ate?.va...
+    print(product.name);
+    print(product.price);
+    print(product.available);
     return formKey.currentState?.validate() ?? false;
   }
 }

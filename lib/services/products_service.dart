@@ -12,6 +12,7 @@ class ProductsService extends ChangeNotifier {
   //? propiedad
   Product? selectedProduct;
   bool isLoading = true;
+  bool isSaving = false;
 
   //HACER FETCH DE PRODUCTOS
 
@@ -64,5 +65,41 @@ class ProductsService extends ChangeNotifier {
 
     //print(this.products[0].name);
     return this.products;
+  }
+
+  //! AQUI el proceso de grabacion al CRUD....
+  //! ****************************************
+  //! creo un nuevo metodo, este es el encargado de hacer las interacciones
+  //! con mi backend
+  Future saveOrCreateProduct(Product product) async {
+    isSaving = true;
+    notifyListeners();
+    //! necesito confirmar el id de producto
+    //! si tengo un id ==> estoy actualizando
+    //! si no tengo un id ==> es un producto nuevo
+    if (product.id == null) {
+      // Es necesario crear, nuevo producto
+    } else {
+      //Actualizar
+      //! llamo un uevo metodo!
+      await this.updateProduct(product);
+    }
+
+    isSaving = false;
+    notifyListeners();
+  }
+
+  //! la idea es que esto se encargue hacer la peticion al backend
+  Future<String> updateProduct(Product product) async {
+    //
+    final url = Uri.https(_baseUrl, 'products/${product.id}.json');
+    //! disparamos la peticion
+    final resp = await http.put(url, body: product.toJson());
+    //! creo una nuevo variable
+    final decodedData = resp.body;
+
+    print(decodedData);
+    //TODO: Actualizar el listado de productos
+    return product.id!;
   }
 }

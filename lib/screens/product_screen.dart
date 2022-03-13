@@ -39,6 +39,9 @@ class _ProductScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //! creo la referencia a ese provider <ProductFormProvider>
+    //! dejo el listen en true, ara que se actualice
+    final productForm = Provider.of<ProductFormProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
         //* en lo personal lo veo muy agresivo!
@@ -89,8 +92,10 @@ class _ProductScreenBody extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save_outlined),
-        onPressed: () {
-          //
+        onPressed: () async {
+          // Done! Guardar producto
+          if (!productForm.isValidForm()) return;
+          await productService.saveOrCreateProduct(productForm.product);
         },
       ),
     );
@@ -116,6 +121,9 @@ class _ProductForm extends StatelessWidget {
         //height: 200,
         decoration: _buildBoxDecoration(),
         child: Form(
+          //! asignamos el key del product_form_provider al formulario
+          key: productForm.formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               //
