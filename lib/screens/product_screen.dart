@@ -78,7 +78,8 @@ class _ProductScreenBody extends StatelessWidget {
                       final picker = new ImagePicker();
                       // archivo seleccionado
                       final PickedFile? pickedFile = await picker.getImage(
-                        source: ImageSource.camera,
+                        //source: ImageSource.camera,
+                        source: ImageSource.gallery,
                         imageQuality: 100,
                       );
                       if (pickedFile == null) {
@@ -88,6 +89,8 @@ class _ProductScreenBody extends StatelessWidget {
                         return;
                       }
                       print('Tenemos imagen ${pickedFile.path}');
+                      productService
+                          .updateSelectedProductImage(pickedFile.path);
                     },
                     icon: const Icon(
                       Icons.camera_alt_outlined,

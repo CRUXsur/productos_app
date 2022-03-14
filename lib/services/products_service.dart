@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
@@ -11,6 +12,9 @@ class ProductsService extends ChangeNotifier {
   final List<Product> products = [];
   //? propiedad
   Product? selectedProduct;
+  // img:
+  File? newPictureFile;
+
   bool isLoading = true;
   bool isSaving = false;
 
@@ -129,5 +133,23 @@ class ProductsService extends ChangeNotifier {
     this.products.add(product);
 
     return product.id!;
+  }
+
+  // img: Nuevo metodo para mostrar la imagen
+  // img: Obejtivo de este metodo es simplemente cambiar la imagen
+  // img: que tengo en la vista previa, todavia no voy a grabar nada
+  // img: en la base de datos, ni hare una peticion, porque pudiera ser
+  // img: que la persona simopkemente selecciono la imgen y regresa
+  // img: y no quiere grabarla
+  // img: Necesito recibir el path
+  void updateSelectedProductImage(String path) {
+    // img: path que estoy recibiendo
+    // img: actualiza selectedProduct!.picture...con el path
+    this.selectedProduct!.picture = path;
+    // img: crea una nueva variable newPictureFile ....
+    this.newPictureFile = File.fromUri(Uri(path: path));
+    // img: notifica, para que en product_screen se redibuje
+    // img: con la nueva imagen!!!!
+    notifyListeners();
   }
 }

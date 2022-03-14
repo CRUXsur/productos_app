@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ProductImage extends StatelessWidget {
@@ -23,22 +25,11 @@ class ProductImage extends StatelessWidget {
           //! va con [A]....ver abajo!
           opacity: 0.9,
           child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(45),
-              topRight: Radius.circular(45),
-            ),
-            child: this.url == null
-                ? const Image(
-                    image: AssetImage('assets/no-image.png'),
-                    fit: BoxFit.cover,
-                  )
-                : FadeInImage(
-                    //! YA HICE LA VERIFICACION, puedo poner !
-                    image: NetworkImage(this.url!),
-                    placeholder: AssetImage('assets/jar-loading.gif'),
-                    fit: BoxFit.cover,
-                  ),
-          ),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(45),
+                topRight: Radius.circular(45),
+              ),
+              child: getImage(url)),
         ),
       ),
     );
@@ -59,4 +50,28 @@ class ProductImage extends StatelessWidget {
           )
         ],
       );
+
+  // img: necesito hacer tres 3 evaluaciones......
+  Widget getImage(String? picture) {
+    //
+    if (picture == null) {
+      return const Image(
+        image: AssetImage('assets/no-image.png'),
+        fit: BoxFit.cover,
+      );
+    }
+    if (picture.startsWith('http')) {
+      return FadeInImage(
+        //! YA HICE LA VERIFICACION, puedo poner !
+        image: NetworkImage(this.url!),
+        placeholder: AssetImage('assets/jar-loading.gif'),
+        fit: BoxFit.cover,
+      );
+    }
+    // img: Constructor x nombre que es Image.file(file)
+    return Image.file(
+      File(picture),
+      fit: BoxFit.cover,
+    );
+  }
 }
