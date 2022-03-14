@@ -152,4 +152,45 @@ class ProductsService extends ChangeNotifier {
     // img: con la nueva imagen!!!!
     notifyListeners();
   }
+
+  // img upload : PETICION A Cloudinary! para subir la imagen
+  Future<String?> uploadImage() async {
+    // nos aseguramos que tenemos una imagen
+    if (this.newPictureFile == null) return null;
+    this.isSaving = true;
+    notifyListeners();
+
+    final url = Uri.parse(
+        'https://api.cloudinary.com/v1_1/djtycwcta/image/upload?upload_preset=rqr9vart');
+    //img upload: me creo el request
+    final imageUploadRequest = http.MultipartRequest(
+      'POST',
+      url,
+    );
+    //img upload: adjunto el archivo...
+    //img upload: acabo de hacer la evaluacion y NO sera nulo !
+    final file = await http.MultipartFile.fromPath(
+      'file',
+      newPictureFile!.path,
+    );
+    //img upload: adjuntamos el file
+    imageUploadRequest.files.add(file);
+    //img upload: Disparo la peticion
+    final streamResponse = await imageUploadRequest.send();
+    final resp = await http.Response.fromStream(streamResponse);
+
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
+      print('algo salio mal');
+      print(resp.body);
+      return null;
+    }
+    //img upload: ya lo subi y limpio esa propiedad, no necesito
+    //img upload: hacer nada mas
+    this.newPictureFile = null;
+    final decodedData = json.decode(resp.body);
+    //print(resp.body);
+    return decodedData['secure_url'];
+    //this.isSaving = false;
+    //notifyListeners();
+  }
 }
