@@ -78,9 +78,10 @@ class ProductsService extends ChangeNotifier {
     //! si tengo un id ==> estoy actualizando
     //! si no tengo un id ==> es un producto nuevo
     if (product.id == null) {
-      // Es necesario crear, nuevo producto
+      //* Es necesario crear, nuevo producto
+      await this.createProduct(product);
     } else {
-      //Actualizar
+      //!Actualizar
       //! llamo un uevo metodo!
       await this.updateProduct(product);
     }
@@ -106,6 +107,26 @@ class ProductsService extends ChangeNotifier {
     final index =
         this.products.indexWhere((element) => element.id == product.id);
     this.products[index] = product;
+
+    return product.id!;
+  }
+
+  //* AQUI! Create nuevo producto***************
+  Future<String> createProduct(Product product) async {
+    //* recibo un producto que NO tiene el id!!!!!
+    final url = Uri.https(_baseUrl, 'products.json');
+    //* disparamos la peticion post para crear una nueva
+    final resp = await http.post(url, body: product.toJson());
+    //* creo una nuevo variable
+    //* y lo convierto a un mapa
+    //*   json.decode(resp.body);
+    final decodedData = json.decode(resp.body);
+    //print(decodedData);
+    //* en el name recibimos el id que le pone Firebase
+    //* I/flutter (14522): {"name":"-My5-6cGGp2-HL4eMdne"}
+    product.id = decodedData['name'];
+    //* o lo anadimos al inicio o lo anadimos al final!!!!
+    this.products.add(product);
 
     return product.id!;
   }
