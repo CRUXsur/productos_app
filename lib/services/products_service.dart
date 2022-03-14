@@ -98,8 +98,15 @@ class ProductsService extends ChangeNotifier {
     //! creo una nuevo variable
     final decodedData = resp.body;
 
-    print(decodedData);
-    //TODO: Actualizar el listado de productos
+    //print(decodedData);
+    //Done! Actualizar el listado de productos
+    //! esto me regresa el indice del producto cuyo id es igual al id
+    //! que estoy recibiendo aqui: ....Product product....
+    //! Future<String> updateProduct(Product product) async {
+    final index =
+        this.products.indexWhere((element) => element.id == product.id);
+    this.products[index] = product;
+
     return product.id!;
   }
 }
