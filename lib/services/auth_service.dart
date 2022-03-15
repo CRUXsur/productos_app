@@ -10,6 +10,7 @@ class AuthService extends ChangeNotifier {
   //no es el token que usan los usuarios
   final String _firebaseToken = 'AIzaSyCP-LUnN8kpTqnJmCLIURi13N1blnNjV1k';
 
+  //! si retornamos algo es un error, si no, todo bien!
   //crear usuario; metodo
   Future<String?> createUser(String email, String password) async {
     //creamos la informacion del POST
@@ -25,6 +26,15 @@ class AuthService extends ChangeNotifier {
     //decodoficamos la respuesta
     final Map<String, dynamic> decodeResp = json.decode(resp.body);
     //analizamos la respuesta si tenemos error......la procesamos....
-    print(decodeResp);
+    //print(decodeResp);
+    //La respuesta si tiene el idToken, que vienen en la respuesta correcta
+    //entonces se creo correctamente
+    if (decodeResp.containsKey('idToken')) {
+      //Token hay que guardarlo en un lugar seguro!!!!!!!
+      //decodeResp['idToken'];
+      return null; //hey las credencial estan mal!
+    } else {
+      return decodeResp['error']['message'];
+    }
   }
 }
