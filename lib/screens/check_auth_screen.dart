@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:productos_app/screens/screens.dart';
 import 'package:productos_app/services/services.dart';
 
 //ESTA ES UNA PANTALLA INTERMEDIA ANTES DE ENTRAR...
@@ -26,12 +27,32 @@ class CheckAuthScreen extends StatelessWidget {
             //! PERO AQUI NO PUEDO UNAS UN NAVIGATOR PARA IRME A OTRA
             //! PANTALLA PORQUE TIENE QUE REGRESAR ALGO EL WIDGET
             //! QUE ESTA CONSTRUYENDO ALGO....REVIENTA MI APP!
-            //if( snapshot.data == ''){  //sacamos al usuario.....
-            //}
             //! USAMOS UN microtask!!!!!!
-            Future.microtask(() {
-              Navigator.of(context).pushReplacementNamed('login');
-            });
+            if (snapshot.data == '') {
+              //sacamos al usuario.....
+              Future.microtask(() {
+                //* HACEMOS UNA NAVEGACION MANUAL
+                //* en vez de usar el navigator......
+                //Navigator.of(context).pushReplacementNamed('login');
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => const LoginScreen(),
+                    transitionDuration: const Duration(seconds: 0),
+                  ),
+                );
+              });
+            } else {
+              Future.microtask(() {
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => const HomeScreen(),
+                    transitionDuration: const Duration(seconds: 0),
+                  ),
+                );
+              });
+            }
 
             return Container();
           },
