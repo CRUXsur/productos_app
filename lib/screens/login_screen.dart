@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:productos_app/services/services.dart';
 import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/ui/input_decorations.dart';
 import 'package:productos_app/widgets/widgets.dart';
@@ -125,6 +126,13 @@ class _LoginForm extends StatelessWidget {
                   ? null
                   : () async {
                       FocusScope.of(context).unfocus();
+                      //necesito acceso a mi authService
+                      //no necesito ..,listen: false..., porque estoy
+                      //dentro un metodo. Si lo pongo me tira un error
+                      //solo puedo escuchar dentro del Build!
+                      final authService =
+                          Provider.of<AuthService>(context, listen: false);
+
                       if (!loginForm.isValidForm()) return;
                       loginForm.isLoading = true;
                       //! si todo sale bien!, me voy a la siguiente screen
@@ -132,10 +140,17 @@ class _LoginForm extends StatelessWidget {
                       //! regresar atras!
 
                       //* finjo el tiempo de la peticion
-                      await Future.delayed(const Duration(seconds: 2));
-                      //TODO: Validar si el login es correcto
-                      loginForm.isLoading = false;
-                      Navigator.pushReplacementNamed(context, 'home');
+                      //await Future.delayed(const Duration(seconds: 2));
+                      //Done! Validar si el login es correcto
+                      final String? errorMessage = await authService.login(
+                          loginForm.email, loginForm.password);
+                      if (errorMessage == null) {
+                        Navigator.pushReplacementNamed(context, 'home');
+                      } else {
+                        //TODO: Mostrar error en pantalla
+                        print(errorMessage);
+                        loginForm.isLoading = false;
+                      }
                     },
             )
           ],

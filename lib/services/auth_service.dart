@@ -37,4 +37,33 @@ class AuthService extends ChangeNotifier {
       return decodeResp['error']['message'];
     }
   }
+
+  //login usuario; metodo
+  Future<String?> login(String email, String password) async {
+    //creamos la informacion del POST
+    final Map<String, dynamic> authData = {
+      'email': email,
+      'password': password,
+    };
+    //creamos el url
+    final url = Uri.https(
+        _baseUrl, '/v1/accounts:signInWithPassword', {'key': _firebaseToken});
+    //disparamos la peticion http
+    final resp = await http.post(url, body: json.encode(authData));
+    //decodoficamos la respuesta
+    final Map<String, dynamic> decodeResp = json.decode(resp.body);
+    //analizamos la respuesta si tenemos error......la procesamos....
+    print(decodeResp);
+    //return 'Error en el login';
+    //La respuesta si tiene el idToken, que vienen en la respuesta correcta
+    //entonces se creo correctamente
+    if (decodeResp.containsKey('idToken')) {
+      //Token hay que guardarlo en un lugar seguro!!!!!!!
+      //decodeResp['idToken'];
+      //todo esta bien
+      return null; //hey las credencial estan mal!
+    } else {
+      return decodeResp['error']['message'];
+    }
+  }
 }
