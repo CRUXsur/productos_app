@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:productos_app/models/models.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:productos_app/models/models.dart';
 
 class ProductsService extends ChangeNotifier {
   //
@@ -12,6 +14,12 @@ class ProductsService extends ChangeNotifier {
   final List<Product> products = [];
   //? propiedad
   Product? selectedProduct;
+
+  //USAR EL SECURE STORAGE DENTRO DE MI products_service.dart
+  //DE ESTA MANERA VOY A EVITAR ACOPLAR LO QUE ES MI AUTH CON MI
+  //PROCUTS_SERVICE
+  final storage = new FlutterSecureStorage();
+
   // img:
   File? newPictureFile;
 
@@ -36,8 +44,14 @@ class ProductsService extends ChangeNotifier {
   Future<List<Product>> loadProducts() async {
     this.isLoading = true;
     notifyListeners();
-    //
-    final url = Uri.https(_baseUrl, 'products.json');
+    // algunos backends pide el token en el url
+    // otros piden en los headers:[  ] de la peticion
+    //final resp = await http.get(url,headers: {
+    //  //
+    //});
+    // antes : final url = Uri.https(_baseUrl, 'products.json');
+    final url = Uri.https(_baseUrl, 'products.json',
+        {'auth': await storage.read(key: 'token') ?? ''});
     //?disparamos la peticion
     final resp = await http.get(url);
     //?y me va a regresar una respuesta cuyo body viene como un String,
@@ -97,7 +111,8 @@ class ProductsService extends ChangeNotifier {
   //! la idea es que esto se encargue hacer la peticion al backend
   Future<String> updateProduct(Product product) async {
     //
-    final url = Uri.https(_baseUrl, 'products/${product.id}.json');
+    final url = Uri.https(_baseUrl, 'products/${product.id}.json',
+        {'auth': await storage.read(key: 'token') ?? ''});
     //! disparamos la peticion
     final resp = await http.put(url, body: product.toJson());
     //! creo una nuevo variable
@@ -118,7 +133,8 @@ class ProductsService extends ChangeNotifier {
   //* AQUI! Create nuevo producto***************
   Future<String> createProduct(Product product) async {
     //* recibo un producto que NO tiene el id!!!!!
-    final url = Uri.https(_baseUrl, 'products.json');
+    final url = Uri.https(_baseUrl, 'products.json',
+        {'auth': await storage.read(key: 'token') ?? ''});
     //* disparamos la peticion post para crear una nueva
     final resp = await http.post(url, body: product.toJson());
     //* creo una nuevo variable
